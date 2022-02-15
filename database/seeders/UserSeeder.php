@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
             'name' => 'Faisal Ahsan',
             'email' => 'faisalpnc05@gmail.com',
             'password' => Hash::make('PNCSol'),
+            'token' => '',
         ]);
     }
 }
