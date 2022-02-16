@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use App\Models\EmailQueue;
+use Validator;
 
 class MailController extends Controller
 {
-    public function sendmail(Request $request){
+    public function queueMail(Request $request){
         $validator = Validator::make($request->all(), [
-            'mailservice' => 'required|number',
+            'mailservice' => 'required|numeric',
             'subject' => 'required|string',
             'to' => 'required|email',
             'name' => 'required|string',
-            'template_id' => 'required|number',
+            'template_id' => 'required|numeric',
         ]);
 
         if($validator->fails()) {
@@ -24,18 +26,27 @@ class MailController extends Controller
         $to = $request->input('to');
         $name = $request->input('name');
         $template_id = $request->input('template_id');
-        
-        $data = [
-            'email'   => $to, 
-            'subject' => $subject,
-            'body'    => $request->input('body')
+
+        $saveMailQueue = [
+            'smtp_config_id'=>$mailservice,
+            'subject'=>$subject,
+            'template_id'=>$template_id,
+            'email'=>$to,
+            'name'=>$name,
+            'status'=>'queue',
+            'template_html'=>'queue',
+            'status_update_time'=>date('Y-m-d H:i:s'),
         ];
 
-        Mail::send('emails.support', $data, function($message) use ($data)
-        {
-            $message->to($data['email'],$data['name']);
-            $message->subject($data['subject']);
-        });
+
+        EmailQueue::insert($saveMailQueue);
+
+
+        // Mail::send('emails.support', $data, function($message) use ($data)
+        // {
+        //     $message->to($data['email'],$data['name']);
+        //     $message->subject($data['subject']);
+        // });
     
     }
 }

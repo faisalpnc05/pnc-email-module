@@ -31,7 +31,7 @@ Route::group(['middleware' => 'api'], function($router) {
     Route::post('/profile', [JWTController::class, 'profile']);
     
     
-    Route::post('/sendmail', [MailController::class, 'sendmail']);
+    Route::post('/sendmail', [MailController::class, 'queueMail']);
 
 
 });

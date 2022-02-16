@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('email_queue', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('smtp_coonfig_id')->unsigned();
+            $table->bigInteger('smtp_config_id')->unsigned();
             $table->bigInteger('template_id')->unsigned();
             $table->string('name');
             $table->string('subject');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->longText('template_html');
             $table->timestamps();
             $table->foreign('template_id')->references('id')->on('email_template');
-            $table->foreign('smtp_coonfig_id')->references('id')->on('smtp_config');
+            $table->foreign('smtp_config_id')->references('id')->on('smtp_config');
         });
     }
 
