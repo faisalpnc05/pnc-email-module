@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Hash;
 
 
 class User extends Authenticatable implements JWTSubject
@@ -23,6 +24,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'token',
     ];
 
     /**
@@ -66,5 +68,20 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function createUserFromEmailQueue($userEmailNName){
+        $alreadyExist = $user = User::where('email',$userEmailNName['to'])->first();
+        if(!$alreadyExist){
+            $insertUser = [
+                'name' => $userEmailNName['name'],
+                'email' => $userEmailNName['to'],
+                'password' => Hash::make('CreatedFromSendEmailEndPoint'),
+                'token' => 'abc_token',
+            ];
+            // dd('insertUser>>',$insertUser);
+            $user = User::create($insertUser);
+
+        }
+        return $user;
+    }
     
 }

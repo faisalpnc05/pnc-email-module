@@ -14,7 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::table('email_queue', function (Blueprint $table) {
-            $table->string('status')->after('id');
             $table->dateTime('status_update_time')->after('id');
         });
     }

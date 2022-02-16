@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\EmailQueue;
 use Validator;
+use App\Models\User;
 
 class MailController extends Controller
 {
@@ -26,6 +27,8 @@ class MailController extends Controller
         $to = $request->input('to');
         $name = $request->input('name');
         $template_id = $request->input('template_id');
+        $existOrCreate = ['to'=>$to,'name'=>$name];
+        User::createUserFromEmailQueue($existOrCreate);
 
         $saveMailQueue = [
             'smtp_config_id'=>$mailservice,
@@ -33,20 +36,11 @@ class MailController extends Controller
             'template_id'=>$template_id,
             'email'=>$to,
             'name'=>$name,
-            'status'=>'queue',
-            'template_html'=>'queue',
+            'read_status'=>'queue',
+            'template_html'=>'', //keep null will render before sending on schedule job
             'status_update_time'=>date('Y-m-d H:i:s'),
+            'created_at'=>date('Y-m-d H:i:s'),
         ];
-
-
-        EmailQueue::insert($saveMailQueue);
-
-
-        // Mail::send('emails.support', $data, function($message) use ($data)
-        // {
-        //     $message->to($data['email'],$data['name']);
-        //     $message->subject($data['subject']);
-        // });
-    
+        EmailQueue::insert($saveMailQueue);    
     }
 }
