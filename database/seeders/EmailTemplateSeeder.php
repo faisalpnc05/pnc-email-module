@@ -18,12 +18,16 @@ class EmailTemplateSeeder extends Seeder
     {
         DB::table('email_template')->insert(
             [
-                'name' => 'Marketing Email',
-                'template_html' => 'Hello This is testing email template',
-            ],
-            [
-                'name' => 'Greeting Email',
-                'template_html' => 'Hello this is greeting email',
+                [
+                    'name' => 'Marketing Email',
+                    'template_key' => 'MARKETING_EMAIL',
+                    'template_html' => 'Hello This is testing email template',
+                ],
+                [
+                    'name' => 'Greeting Email',
+                    'template_key' => 'GREETING_EMAIL',
+                    'template_html' => 'Hello this is greeting email',
+                ]
             ]
         );
     }

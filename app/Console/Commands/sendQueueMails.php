@@ -52,11 +52,10 @@ class sendQueueMails extends Command
                     $message->to($queueMail['email']);
                     $message->subject($queueMail['subject']);
                 });
-                $updateQueueStatus = ['read_status'=>'sent','status_update_time'=>date('Y-m-d H:i:s')];
+                $updateQueueStatus = ['read_status'=>'sent','status_update_time'=>date('Y-m-d H:i:s'),'template_html'=>$queueMail['template_html']];
                 // check for failures
                 if (Mail::failures()) {
                     $updateQueueStatus['read_status']='failed';
-                    // return response showing failed emails
                 }
 
                 EmailQueue::where('id',$queueMail['id'])->update($updateQueueStatus);

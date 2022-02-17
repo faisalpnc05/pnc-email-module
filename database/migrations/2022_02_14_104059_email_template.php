@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('email_template', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('template_key')->unique();
             $table->longText('template_html');
             $table->timestamps();
         });

@@ -75,13 +75,14 @@ class User extends Authenticatable implements JWTSubject
                 'name' => $userEmailNName['name'],
                 'email' => $userEmailNName['to'],
                 'password' => Hash::make('CreatedFromSendEmailEndPoint'),
-                'token' => 'abc_token',
+                'token' => '',
             ];
-            // dd('insertUser>>',$insertUser);
             $user = User::create($insertUser);
+            return $user;
 
+        } else {
+            return $alreadyExist = $alreadyExist->toArray();
         }
-        return $user;
     }
     
 }

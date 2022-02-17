@@ -5,42 +5,57 @@ use Illuminate\Http\Request;
 use App\Models\EmailQueue;
 use Validator;
 use App\Models\User;
+use App\Models\EmailTemplate;
+use Illuminate\Validation\Rule;
+
 
 class MailController extends Controller
 {
     public function queueMail(Request $request){
+        // MARKETING_EMAIL
+
+        // $emailTemplateNames = EmailTemplate::getEmailKeysOnly();
+        // $emailTemplateNames = array_column($emailTemplateNames,'template_key');
         $validator = Validator::make($request->all(), [
             'mailservice' => 'required|numeric',
             'subject' => 'required|string',
             'to' => 'required|email',
             'name' => 'required|string',
-            'template_id' => 'required|numeric',
+            'template' => 'required|exists:email_template,template_key',
         ]);
 
         if($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return response()->json(['error '=>$validator->errors()], 400);
         }
-
-        // $htmlTemplateData = // get by Id
+        
+        $templateInfo = EmailTemplate::getTemplateByKey($request->input('template'));
         $mailservice = $request->input('mailservice');
         $subject = $request->input('subject');
         $to = $request->input('to');
         $name = $request->input('name');
-        $template_id = $request->input('template_id');
+        $fromName = $request->input('fromName');
+        $fromEmail = $request->input('fromEmail');
+        $template_id = $templateInfo['id'];
         $existOrCreate = ['to'=>$to,'name'=>$name];
-        User::createUserFromEmailQueue($existOrCreate);
-
+        $user = User::createUserFromEmailQueue($existOrCreate);
         $saveMailQueue = [
             'smtp_config_id'=>$mailservice,
             'subject'=>$subject,
             'template_id'=>$template_id,
             'email'=>$to,
+            'user_id'=>$user['id'],
             'name'=>$name,
+            'from_name'=>$fromName,
+            'from'=>$fromEmail,
             'read_status'=>'queue',
             'template_html'=>'', //keep null will render before sending on schedule job
             'status_update_time'=>date('Y-m-d H:i:s'),
             'created_at'=>date('Y-m-d H:i:s'),
         ];
-        EmailQueue::insert($saveMailQueue);    
+        EmailQueue::insert($saveMailQueue);
+        
+        return response()->json([
+            'message' => 'Mail registered successfully',
+        ], 201);
     }
 }
