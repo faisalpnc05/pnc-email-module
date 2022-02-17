@@ -32,6 +32,9 @@ Route::group(['middleware' => 'api'], function($router) {
     
     
     Route::post('/sendmail', [MailController::class, 'queueMail']);
+    
+    //validate auth token
+    Route::get('/mailreport', [MailController::class, 'queueMailReports']);
 
 
 });

@@ -8,14 +8,11 @@ use App\Models\User;
 use App\Models\EmailTemplate;
 use Illuminate\Validation\Rule;
 
-
 class MailController extends Controller
 {
     public function queueMail(Request $request){
         // MARKETING_EMAIL
 
-        // $emailTemplateNames = EmailTemplate::getEmailKeysOnly();
-        // $emailTemplateNames = array_column($emailTemplateNames,'template_key');
         $validator = Validator::make($request->all(), [
             'mailservice' => 'required|numeric',
             'subject' => 'required|string',
@@ -57,5 +54,12 @@ class MailController extends Controller
         return response()->json([
             'message' => 'Mail registered successfully',
         ], 201);
+    }
+
+    public function queueMailReports(){
+        return response()->json([
+            'data' => EmailQueue::reports(),
+        ], 200);
+
     }
 }
