@@ -64,12 +64,17 @@ class JWTController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if (!$token = auth()->attempt($validator->validated())) {
+        if (!$token = auth('api')->attempt($validator->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+
+
+
+        //   $token = auth('api')->attempt($credentials);
         
-        $newToken = $this->newJWTToken(auth()->user()->toArray(auth()->user()->toArray()));
-        return $this->respondWithToken($newToken);
+        // $newToken = $this->newJWTToken(auth()->user()->toArray(auth()->user()->toArray()));
+        return $this->respondWithToken($token);
     }
 
     public function newJWTToken($user){

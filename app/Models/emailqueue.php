@@ -24,31 +24,30 @@ class EmailQueue extends Model
 
 
         $raw_count = '
-        SUM(CASE 
-        WHEN read_status = \'queue\' 
-        THEN 1 
-        ELSE 0 
-        END) AS totalQueue,
+            SUM(CASE 
+            WHEN read_status = \'queue\' 
+            THEN 1 
+            ELSE 0 
+            END) AS totalQueue,
 
-        SUM(CASE 
-        WHEN read_status = \'sent\' 
-        THEN 1 
-        ELSE 0 
-        END) AS totalSent,
+            SUM(CASE 
+            WHEN read_status = \'sent\' 
+            THEN 1 
+            ELSE 0 
+            END) AS totalSent,
 
-        SUM(CASE 
-        WHEN read_status = \'failed\' 
-        THEN 1 
-        ELSE 0 
-        END) AS totalFailed,
+            SUM(CASE 
+            WHEN read_status = \'failed\' 
+            THEN 1 
+            ELSE 0 
+            END) AS totalFailed,
 
-        SUM(CASE 
-        WHEN read_status = \'read\' 
-        THEN 1 
-        ELSE 0 
-        END) AS totalRead
-    
-    ';
+            SUM(CASE 
+            WHEN read_status = \'read\' 
+            THEN 1 
+            ELSE 0 
+            END) AS totalRead
+        ';
 
         $queueCounts = self::selectRaw($raw_count)->get()->toArray();
 
