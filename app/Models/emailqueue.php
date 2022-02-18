@@ -21,8 +21,6 @@ class EmailQueue extends Model
     }
 
     public static function reports(){
-
-
         $raw_count = '
             SUM(CASE 
             WHEN read_status = \'queue\' 
@@ -48,20 +46,18 @@ class EmailQueue extends Model
             ELSE 0 
             END) AS totalRead
         ';
-
         $queueCounts = self::selectRaw($raw_count)->get()->toArray();
-
-        $queueRecords = self::whereIn('read_status',['queue','failed'])->with('template')->get()->toArray();
+        $queueRecords = self::with('template')->get()->toArray();
         return ['queueCounts'=>$queueCounts,'queueRecords'=>$queueRecords];
     }
 
-    public static function getQueueFailedMails(){
-        $queueRecords = self::select(DB::raw('email_queue.*'),'email_template.template_html')->whereIn('read_status',['queue','failed'])
-        ->leftJoin('email_template','email_queue.template_id','email_template.id')
-        ->get();
-        if(method_exists($queueRecords,'toArray')){
-            return $queueRecords->toArray();
-        }
-        return $queueRecords;
-    }
+    // public static function getQueueFailedMails(){
+    //     $queueRecords = self::select(DB::raw('email_queue.*'),'email_template.template_html')->whereIn('read_status',['queue','failed'])
+    //     ->leftJoin('email_template','email_queue.template_id','email_template.id')
+    //     ->get();
+    //     if(method_exists($queueRecords,'toArray')){
+    //         return $queueRecords->toArray();
+    //     }
+    //     return $queueRecords;
+    // }
 }
